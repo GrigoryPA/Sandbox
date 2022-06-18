@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: d5167ebaae6d5c84897dc444681afa67
+guid: 33d861784aa8063409d6dd3e4cb04e20
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: Running
+    second: Running Backward
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -35,7 +35,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Running
+      name: Running Backward
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
@@ -63,7 +63,7 @@ ModelImporter:
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
-    isReadable: 1
+    isReadable: 0
   meshes:
     lODScreenPercentages: []
     globalScale: 1

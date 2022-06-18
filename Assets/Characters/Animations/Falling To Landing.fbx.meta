@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: d5167ebaae6d5c84897dc444681afa67
+guid: fbe65eb1f43a98e46b17d4e14dd2569a
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: Running
+    second: Falling To Landing
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -35,21 +35,21 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Running
+      name: Falling To Landing
       takeName: mixamo.com
       internalID: 0
-      firstFrame: 0
-      lastFrame: 19
+      firstFrame: 8
+      lastFrame: 32
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
-      loopBlendPositionY: 0
+      loopBlendPositionY: 1
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
@@ -63,7 +63,7 @@ ModelImporter:
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
-    isReadable: 1
+    isReadable: 0
   meshes:
     lODScreenPercentages: []
     globalScale: 1
