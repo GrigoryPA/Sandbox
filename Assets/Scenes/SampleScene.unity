@@ -1069,7 +1069,6 @@ MonoBehaviour:
   playerTransform: {fileID: 1903743172}
   offset: {x: 0, y: 2.5, z: -2.5}
   cameraCenterTransform: {fileID: 1499959506}
-  cameraMod: 0
   sensitivity: 100
   minMaxAngleY: {x: 0, y: 90}
   maxAngleX: 180
@@ -1308,7 +1307,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1335539117}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 22.63}
+  m_LocalPosition: {x: 0, y: 2.54, z: 22.63}
   m_LocalScale: {x: 10, y: 1, z: 1.47}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1616,7 +1615,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 63
   jumpForce: 6
-  controlMod: 0
+  centerStayCollider: {x: 0.0047426075, y: 0.9041877, z: -0.004768163}
+  radiusStayCollider: 0.166638
+  heightStayCollider: 1.790226
+  centerCrouchCollider: {x: 0.0047426075, y: 0.7002013, z: -0.004768163}
+  radiusCrouchCollider: 0.4
+  heightCrouchCollider: 1.34
 --- !u!4 &1903743172 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b3ff6ac6672392640b04d206c349f43f, type: 3}
