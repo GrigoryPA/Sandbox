@@ -5,10 +5,15 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Transform cameraTransform;
+    [Space]
+    [Header("Checkers")]
+    public Transform groundCheckerTransform;
+    public Transform ceilingCheckerTransform;
+    public LayerMask notPlayerMask;
+    [Space]
+    [Header("Movement settings")]
     public float speed = 2.0f;
     public float rotationSpeed = 20.0f;
-    public Transform groundCheckerTransform;
-    public LayerMask notPlayerMask;
     public float jumpForce = 2.0f;
     [Space]
     [Header("Stay Capsule Collider")]
@@ -27,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private float crouchSpeedKef = 1.0f;
     private CapsuleCollider capsuleCollider;
     private bool isGrounded = true;
+    private bool isTryingCrouchUp = false;
 
     // Start is called before the first frame update
     void Start()
@@ -52,21 +58,29 @@ public class PlayerController : MonoBehaviour
             Jump();
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && FindGroundRaycast(0.1f))
+        if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded)
         {
             SetCapsuleCollider("Crouch");
             crouchSpeedKef = 0.4f;
             animator.SetBool("Crouch", true);
         }
 
-        if (Input.GetKeyUp(KeyCode.LeftShift))
+        if (isTryingCrouchUp || Input.GetKeyUp(KeyCode.LeftShift))
         {
-            SetCapsuleCollider("Stay");
-            crouchSpeedKef = 1.0f;
-            animator.SetBool("Crouch", false);
+            if (!FindCeilingCheckCapsule(radiusStayCollider))
+            {
+                isTryingCrouchUp = false;
+                SetCapsuleCollider("Stay");
+                crouchSpeedKef = 1.0f;
+                animator.SetBool("Crouch", false);
+            }
+            else
+            {
+                isTryingCrouchUp = true;
+            }
         }
 
-        if (Physics.CheckSphere(groundCheckerTransform.position, 0.17f, notPlayerMask))
+        if (FindGroundCheckSphere(capsuleCollider.radius))
         {
             animator.SetBool("IsInAir", false);
             isGrounded = true;
@@ -74,31 +88,38 @@ public class PlayerController : MonoBehaviour
         else
         {
             animator.SetBool("IsInAir", true);
-            isGrounded = true;
+            isGrounded = false;
         }
     }
 
     private void SetCapsuleCollider(string type)
     {
-        switch (type)
+        try
         {
-            case "Stay":
-                capsuleCollider.center = centerStayCollider;
-                capsuleCollider.radius = radiusStayCollider;
-                capsuleCollider.height = heightStayCollider;
-                break;
+            switch (type)
+            {
+                case "Stay":
+                    capsuleCollider.center = centerStayCollider;
+                    capsuleCollider.radius = radiusStayCollider;
+                    capsuleCollider.height = heightStayCollider;
+                    break;
 
-            case "Crouch":
-                capsuleCollider.center = centerCrouchCollider;
-                capsuleCollider.radius = radiusCrouchCollider;
-                capsuleCollider.height = heightCrouchCollider;
-                break;
+                case "Crouch":
+                    capsuleCollider.center = centerCrouchCollider;
+                    capsuleCollider.radius = radiusCrouchCollider;
+                    capsuleCollider.height = heightCrouchCollider;
+                    break;
 
-            default:
-                capsuleCollider.center = centerStayCollider;
-                capsuleCollider.radius = radiusStayCollider;
-                capsuleCollider.height = heightStayCollider;
-                break;
+                default:
+                    capsuleCollider.center = centerStayCollider;
+                    capsuleCollider.radius = radiusStayCollider;
+                    capsuleCollider.height = heightStayCollider;
+                    break;
+            }
+        }
+        finally
+        {
+            UpdateCeilingCheckerPosition(new Vector3(0, capsuleCollider.height - capsuleCollider.radius, 0));
         }
     }
 
@@ -142,5 +163,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool FindGroundRaycast(float dist) => (Physics.Raycast(groundCheckerTransform.position, Vector3.down, dist, notPlayerMask));
+    private bool FindGroundRaycast(float dist) => Physics.Raycast(groundCheckerTransform.position, Vector3.down, dist, notPlayerMask);
+    private bool FindGroundCheckSphere(float radius) => Physics.CheckSphere(groundCheckerTransform.position, radius, notPlayerMask);
+
+    private bool FindCeilingRaycast(float dist) => Physics.Raycast(ceilingCheckerTransform.position, Vector3.up, dist, notPlayerMask);
+    private bool FindCeilingCheckSphere(float radius) => Physics.CheckSphere(new Vector3(transform.position.x, transform.position.y + heightStayCollider - radiusStayCollider , transform.position.z), 
+                                                                            radius, notPlayerMask);
+    private bool FindCeilingCheckCapsule(float radius) => Physics.CheckCapsule(new Vector3(transform.position.x, transform.position.y + radiusStayCollider + 0.1f, transform.position.z),
+                                                                        new Vector3(transform.position.x, transform.position.y + heightStayCollider - radiusStayCollider, transform.position.z),
+                                                                        radius, notPlayerMask);
+    private void UpdateCeilingCheckerPosition(Vector3 newPos) => ceilingCheckerTransform.localPosition = newPos;
 }
