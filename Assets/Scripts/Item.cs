@@ -11,7 +11,8 @@ public enum ItemType
 public class Item : MonoBehaviour
 {
     public ItemType itemType = ItemType.Destroyed;
-    public bool isInvolved = false;
+    public Animator controlObjectAnimator;
+    private bool isInvolved = false;
 
     public void Interaction()
     {
@@ -19,7 +20,8 @@ public class Item : MonoBehaviour
         {
             case ItemType.Button:
                 isInvolved = !isInvolved;
-                GetComponentInParent<Animator>().SetBool("Active", isInvolved);
+                GetComponent<Animator>().SetBool("Active", isInvolved);
+                controlObjectAnimator.SetBool("Active", isInvolved);
                 break;
 
             case ItemType.Destroyed:
