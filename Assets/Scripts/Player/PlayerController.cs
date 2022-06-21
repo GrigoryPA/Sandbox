@@ -9,7 +9,9 @@ public class PlayerController : MonoBehaviour
     [Header("Checkers")]
     public Transform groundCheckerTransform;
     public Transform ceilingCheckerTransform;
+    public Transform interactiveCheckerTransform;
     public LayerMask notPlayerMask;
+    public LayerMask interactiveMask;
     [Space]
     [Header("Movement settings")]
     public float speed = 2.0f;
@@ -33,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider capsuleCollider;
     private bool isGrounded = true;
     private bool isTryingCrouchUp = false;
+    private bool isCrouching = false;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +56,12 @@ public class PlayerController : MonoBehaviour
 
         Locomotion();
 
+        if (Input.GetKeyDown(KeyCode.E) && isGrounded && !isCrouching)
+        {
+            animator.SetTrigger("Click");
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
@@ -62,15 +71,17 @@ public class PlayerController : MonoBehaviour
         {
             SetCapsuleCollider("Crouch");
             crouchSpeedKef = 0.4f;
+            isCrouching = true;
             animator.SetBool("Crouch", true);
         }
 
-        if (isTryingCrouchUp || Input.GetKeyUp(KeyCode.LeftShift))
+        if (isCrouching && (isTryingCrouchUp || Input.GetKeyUp(KeyCode.LeftShift)))
         {
             if (!FindCeilingCheckCapsule(radiusStayCollider))
             {
                 isTryingCrouchUp = false;
                 SetCapsuleCollider("Stay");
+                isCrouching = false;
                 crouchSpeedKef = 1.0f;
                 animator.SetBool("Crouch", false);
             }
@@ -129,11 +140,11 @@ public class PlayerController : MonoBehaviour
 
         direction = Vector3.ClampMagnitude(transform.rotation * (new Vector3(0, 0, Input.GetAxis("Vertical"))), 1);
 
-        //rigidbody.velocity = new Vector3(direction.x * speed, rigidbody.velocity.y, direction.z * speed);
         float resultSpeed = speed * crouchSpeedKef;
-        rigidbody.velocity = new Vector3(direction.x * resultSpeed, rigidbody.velocity.y, direction.z * resultSpeed);
-        rigidbody.angularVelocity = Vector3.zero;
-        animator.SetFloat("Speed", (Input.GetAxis("Vertical")<0?-1:1) * direction.magnitude);
+        if(isGrounded)
+            rigidbody.velocity = new Vector3(direction.x * resultSpeed, rigidbody.velocity.y, direction.z * resultSpeed);
+        rigidbody.angularVelocity = new Vector3();
+        animator.SetFloat("Speed", (Input.GetAxis("Vertical") < 0 ? -1 : 1) * direction.magnitude);
     }
 
     private void CalculateRotation(int controlMod)
@@ -163,8 +174,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void TryInteraction()
+    {
+        Collider[] colliders = Physics.OverlapSphere(interactiveCheckerTransform.position, 0.12f, interactiveMask);
+
+        if (colliders.Length > 0)
+        {
+            colliders[0].GetComponent<Item>().Interaction();
+        }
+    }
+
     private bool FindGroundRaycast(float dist) => Physics.Raycast(groundCheckerTransform.position, Vector3.down, dist, notPlayerMask);
-    private bool FindGroundCheckSphere(float radius) => Physics.CheckSphere(groundCheckerTransform.position, radius, notPlayerMask);
+    private bool FindGroundCheckSphere(float radius) => Physics.CheckSphere(groundCheckerTransform.position - new Vector3(0, 0.1f, 0), radius - 0.01f, notPlayerMask);
 
     private bool FindCeilingRaycast(float dist) => Physics.Raycast(ceilingCheckerTransform.position, Vector3.up, dist, notPlayerMask);
     private bool FindCeilingCheckSphere(float radius) => Physics.CheckSphere(new Vector3(transform.position.x, transform.position.y + heightStayCollider - radiusStayCollider , transform.position.z), 
