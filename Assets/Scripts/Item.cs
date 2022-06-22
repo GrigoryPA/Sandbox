@@ -5,6 +5,9 @@ using UnityEngine;
 public enum ItemType
 {
     Button,
+    Gun,
+    Autogun,
+    Lasergun,
     Destroyed
 }
 
@@ -19,6 +22,12 @@ public class Item : MonoBehaviour
         switch (itemType)
         {
             case ItemType.Button:
+                isInvolved = !isInvolved;
+                GetComponent<Animator>().SetBool("Active", isInvolved);
+                controlObjectAnimator.SetBool("Active", isInvolved);
+                break;
+
+            case ItemType.Lasergun:
                 isInvolved = !isInvolved;
                 GetComponent<Animator>().SetBool("Active", isInvolved);
                 controlObjectAnimator.SetBool("Active", isInvolved);
