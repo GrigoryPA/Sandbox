@@ -5,12 +5,14 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public Transform playerTransform;
-    public Vector3 offset;
     public Transform cameraCenterTransform;
+    public Vector3 cameraOffsetMod1;
+    public Transform cameraPositionMod2;
+    public Transform cameraPositionMod3;
+    [Space (15)]
     public float sensitivity = 100;
     public Vector2 minMaxAngleY = Vector2.one;
     public float maxAngleX = 180;
-    public Vector3 centerCameraMod2 = new Vector3(0, 1, 0);
     [Range (0.1f, 3.0f)]
     public float mouseSensitivityX = 1.0f;
     [Range (0.1f, 2)]
@@ -42,21 +44,29 @@ public class CameraController : MonoBehaviour
         {
             case 0:
                 cameraCenterTransform.position = playerTransform.position;
-                transform.localPosition = offset;
+                transform.localPosition = cameraOffsetMod1;
                 transform.localEulerAngles = new Vector3(25, 0, 0);
                 break;
 
             case 1:
-                cameraCenterTransform.position = playerTransform.position + centerCameraMod2;
-                transform.localPosition = new Vector3(0.0f, 0.0f, offset.z);
+                cameraCenterTransform.position = cameraPositionMod2.position;
+                transform.localPosition = new Vector3(0.0f, 0.0f, cameraOffsetMod1.z);
+                transform.localRotation = Quaternion.identity;
+                Cursor.lockState = CursorLockMode.None;
+                break;
+
+            case 2:
+                cameraCenterTransform.position = cameraPositionMod3.position;
+                transform.localPosition = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
                 Cursor.lockState = CursorLockMode.None;
                 break;
 
             default:
+                print("Default camera SetStartPositionCameraMod()");
                 cameraCenterTransform.position = playerTransform.position;
-                transform.localPosition = offset;
-                transform.localRotation = Quaternion.AngleAxis(25, transform.right);
+                transform.localPosition = cameraOffsetMod1;
+                transform.localEulerAngles = new Vector3(25, 0, 0);
                 break;
         }
     }
@@ -70,7 +80,7 @@ public class CameraController : MonoBehaviour
                 break;
 
             case 1:
-                cameraCenterTransform.position = playerTransform.position + centerCameraMod2;
+                cameraCenterTransform.position = cameraPositionMod2.position;
                 Vector3 MousePos = Input.mousePosition;
 
                 float newAngleX = mouseSensitivityX * ((MousePos.x / Screen.width) * (2 * maxAngleX) - maxAngleX);
@@ -87,9 +97,14 @@ public class CameraController : MonoBehaviour
 
                 break;
 
+            case 2:
+                cameraCenterTransform.position = cameraPositionMod3.position;
+                cameraCenterTransform.rotation = Quaternion.AngleAxis(playerTransform.eulerAngles.y, Vector3.up);
+                break;
+
             default:
-                cameraCenterTransform.position = playerTransform.localPosition;
-                cameraCenterTransform.eulerAngles = new Vector3(0, playerTransform.eulerAngles.y, 0);
+                cameraCenterTransform.position = playerTransform.position;
+                cameraCenterTransform.rotation = Quaternion.AngleAxis(playerTransform.eulerAngles.y, Vector3.up);
                 break;
         }
     }
