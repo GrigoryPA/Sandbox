@@ -38,7 +38,7 @@ public class CameraController : MonoBehaviour
         RotateCameraMod(CurrentSettings.cameraMod);
     }
 
-    void SetStartPositionCameraMod(int cameraMod)
+    private void SetStartPositionCameraMod(int cameraMod)
     {
         switch (cameraMod)
         {
@@ -62,6 +62,13 @@ public class CameraController : MonoBehaviour
                 Cursor.lockState = CursorLockMode.None;
                 break;
 
+            case 3:
+                cameraCenterTransform.position = cameraPositionMod3.position;
+                transform.localPosition = Vector3.zero;
+                transform.localRotation = Quaternion.identity;
+                Cursor.lockState = CursorLockMode.None;
+                break;
+
             default:
                 print("Default camera SetStartPositionCameraMod()");
                 cameraCenterTransform.position = playerTransform.position;
@@ -70,7 +77,7 @@ public class CameraController : MonoBehaviour
                 break;
         }
     }
-    void RotateCameraMod(int cameraMod)
+    private void RotateCameraMod(int cameraMod)
     {
         switch (cameraMod)
         {
@@ -81,19 +88,7 @@ public class CameraController : MonoBehaviour
 
             case 1:
                 cameraCenterTransform.position = cameraPositionMod2.position;
-                Vector3 MousePos = Input.mousePosition;
-
-                float newAngleX = mouseSensitivityX * ((MousePos.x / Screen.width) * (2 * maxAngleX) - maxAngleX);
-
-                float newAngleY = -mouseSensitivityY * (((MousePos.y) / Screen.height) * (minMaxAngleY.x + minMaxAngleY.y) - minMaxAngleY.y);
-                newAngleY = (newAngleY <= minMaxAngleY.y && newAngleY >= minMaxAngleY.x)
-                    ? newAngleY
-                    : (newAngleY > minMaxAngleY.y)
-                    ? minMaxAngleY.y
-                    : minMaxAngleY.x;
-
-
-                cameraCenterTransform.eulerAngles = new Vector3(newAngleY, newAngleX, 0.0f);
+                cameraCenterTransform.eulerAngles = MouseControllerEulerAngles(maxAngleX, minMaxAngleY.x, minMaxAngleY.y);
 
                 break;
 
@@ -102,10 +97,32 @@ public class CameraController : MonoBehaviour
                 cameraCenterTransform.rotation = Quaternion.AngleAxis(playerTransform.eulerAngles.y, Vector3.up);
                 break;
 
+            case 3:
+                cameraCenterTransform.position = cameraPositionMod3.position;
+                cameraCenterTransform.eulerAngles = MouseControllerEulerAngles(maxAngleX, -90, 60);
+                break;
+
             default:
                 cameraCenterTransform.position = playerTransform.position;
                 cameraCenterTransform.rotation = Quaternion.AngleAxis(playerTransform.eulerAngles.y, Vector3.up);
                 break;
         }
+    }
+
+    private Vector3 MouseControllerEulerAngles(float maxAngleX, float minAngleY, float maxAngleY)
+    {
+        Vector3 MousePos = Input.mousePosition;
+
+        float newAngleX = mouseSensitivityX * ((MousePos.x / Screen.width) * (2 * maxAngleX) - maxAngleX);
+
+        float newAngleY = -mouseSensitivityY * (((MousePos.y) / Screen.height) * (maxAngleY - minAngleY) - maxAngleY);
+        newAngleY = (newAngleY <= maxAngleY && newAngleY >= minAngleY)
+            ? newAngleY
+            : (newAngleY > maxAngleY)
+            ? maxAngleY
+            : minAngleY;
+
+
+        return new Vector3(newAngleY, newAngleX, 0.0f);
     }
 }
