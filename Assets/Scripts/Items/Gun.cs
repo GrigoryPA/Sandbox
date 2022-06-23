@@ -12,13 +12,19 @@ public enum GunType
 public class Gun : Item
 {
     private Animator thisAnimator;
+    private bool isFire = false;
+    private bool isShotting = false;
+    private Vector3 rayOrigin;
+    private Vector3 rayDirection;
     public GameObject shotsSource;
-    public bool isFire = false;
+    public Camera fpsCamera;
     [Space]
     [Header ("Gun settings:")]
     public GunType gunType = GunType.LaserGun;
-    public float timeBtwShots = 0.0f;
-    public float startTimeBtwShot = 0.1f;
+    public LayerMask layerReceivingDamage;
+    public float nextShotTime = 0.0f;
+    public float fireRate = 0.1f;
+    public float shotDurationForSeconds = 1;
     public float maxShotDistace = 0.1f;
 
     private void Start()
@@ -28,20 +34,33 @@ public class Gun : Item
 
     private void Update()
     {
-        if (isUsed && isFire)
+        if (isUsing && isFire)
         {
-            if (timeBtwShots <= 0.0f)
+            if (nextShotTime <= Time.time || isShotting)
             {
-                timeBtwShots = startTimeBtwShot;
+                nextShotTime = isShotting ? Time.time + fireRate : nextShotTime;
 
                 switch (gunType)
                 {
                     case GunType.LaserGun:
                         RaycastHit hit;
-                        if (Physics.Raycast(shotsSource.transform.position, shotsSource.transform.forward, out hit, maxShotDistace))
+                        LineRenderer lineLaser = shotsSource.GetComponent<LineRenderer>();
+                        lineLaser.SetPosition(0, shotsSource.transform.position);
+                        if (Physics.Raycast(rayOrigin, rayDirection, out hit, maxShotDistace, layerReceivingDamage))
                         {
-                            shotsSource.GetComponent<LineRenderer>().SetPositions(new Vector3[2] { shotsSource.transform.position, hit.point });
-                            Destroy(hit.transform.gameObject);
+                            lineLaser.SetPosition(1, hit.point);
+
+                            Color past = hit.transform.gameObject.GetComponent<MeshRenderer>().material.color;
+                            hit.transform.gameObject.GetComponent<MeshRenderer>().material.color = new Color(past.r + 0.1f, past.g, past.b);
+                        }
+                        else
+                        {
+                            lineLaser.SetPosition(1, shotsSource.transform.position + shotsSource.transform.forward * maxShotDistace);
+                        }
+
+                        if (!isShotting)
+                        { 
+                            StartCoroutine(LaserShot(lineLaser)); 
                         }
                         break;
 
@@ -50,22 +69,55 @@ public class Gun : Item
                         break;
                 }
             }
-            else 
+        }
+         
+        if (isUsing)
+        {
+            if (CurrentSettings.cameraMod > 1)
             {
-                timeBtwShots -= Time.deltaTime;
+                Vector3 cameraVector = fpsCamera.transform.eulerAngles;
+                cameraVector.x *= -1;
+                transform.eulerAngles = cameraVector + new Vector3(0, 180, 0) ;
+            }
+            else
+            {
+                transform.eulerAngles = Vector3.forward * 90;
             }
         }
     }
 
-    public void Fire()
+    IEnumerator LaserShot(LineRenderer lineLaser)
     {
-        isFire = !isFire;
-        timeBtwShots = 0.0f;
+        isShotting = true;
+        lineLaser.enabled = true;
+        
+        yield return new WaitForSeconds(shotDurationForSeconds);
+
+        isShotting = false;
+        lineLaser.enabled = false;
     }
 
-    public override void Interaction()
+    public void Fire(Vector3 originForRaycast, Vector3 directionForRaycast)
     {
-        isUsed = !isUsed;
-        thisAnimator.SetBool("Active", isUsed);
+        rayOrigin = originForRaycast;
+        rayDirection = directionForRaycast;
+        isFire = !isFire;
+        nextShotTime = Time.time;
+    }
+
+    public override bool Interaction()
+    {
+        isUsing = !isUsing;
+        this.GetComponent<Collider>().isTrigger = isUsing;
+        if (isUsing)
+        {
+            transform.position = Vector3.zero;
+        }
+        else
+        {
+            transform.position = new Vector3(transform.position.x, 1.5f, transform.position.z);
+        }
+
+        return true;
     }
 }

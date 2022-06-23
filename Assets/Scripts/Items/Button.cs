@@ -6,6 +6,7 @@ public class Button : Item
 {
     public Animator controlledObjectAnimator;
     private Animator thisAnimator;
+    private bool state = false;
     
 
     private void Start()
@@ -13,10 +14,11 @@ public class Button : Item
         thisAnimator = GetComponent<Animator>();
     }
 
-    public override void Interaction()
+    public override bool Interaction()
     {
-        isUsed = !isUsed;
-        thisAnimator.SetBool("Active", isUsed);
-        controlledObjectAnimator.SetBool("Active", isUsed);
+        state = !state;
+        thisAnimator.SetBool("Active", state);
+        controlledObjectAnimator.SetBool("Active", state);
+        return false;
     }
 }

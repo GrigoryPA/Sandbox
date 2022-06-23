@@ -5,11 +5,13 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Transform cameraTransform;
+    public new Camera camera;
     [Space]
     [Header("Checkers")]
     public Transform groundCheckerTransform;
     public Transform ceilingCheckerTransform;
     public Transform interactiveCheckerTransform;
+    public Transform itemWhenUsingTransform; 
     public LayerMask notPlayerMask;
     public LayerMask interactiveMask;
     [Space]
@@ -38,6 +40,8 @@ public class PlayerController : MonoBehaviour
     private bool isCrouching = false;
     private bool isCanMove = true;
     private bool isMoving = false;
+    private bool hasUsedItem = false;
+    private GameObject usedItem;
 
     // Start is called before the first frame update
     void Start()
@@ -63,6 +67,20 @@ public class PlayerController : MonoBehaviour
         if (isCanMove && Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
+        }
+
+        if (hasUsedItem)
+        {
+            UpdatingPositionUsedItem();
+            
+            if (Input.GetMouseButtonDown(0) && CurrentSettings.cameraMod > 1)
+            {
+                usedItem.GetComponent<Gun>().Fire(camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f)), camera.transform.forward);
+            }
+            if (Input.GetMouseButtonUp(0) && CurrentSettings.cameraMod > 1)
+            {
+                usedItem.GetComponent<Gun>().Fire(camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f)), camera.transform.forward);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.E) && isGrounded && !isCrouching && !isMoving)
@@ -192,6 +210,12 @@ public class PlayerController : MonoBehaviour
                                                                         radius, notPlayerMask);
     private void UpdateCeilingCheckerPosition(Vector3 newPos) => ceilingCheckerTransform.localPosition = newPos;
 
+    private void UpdatingPositionUsedItem()
+    {
+        //¬озможно будет перемещение оружи€ в разные места от статуса его использовани€ (на по€с, в руки и т д )
+        //ѕеремещение предмета в руки игрока 
+        usedItem.transform.position = itemWhenUsingTransform.position; 
+    }
 
 
     public void TryInteraction()
@@ -200,7 +224,17 @@ public class PlayerController : MonoBehaviour
 
         if (colliders.Length > 0)
         {
-            colliders[0].GetComponent<Item>().Interaction();
+            if (colliders[0].GetComponent<Item>().Interaction())
+            {
+                hasUsedItem = true;
+                usedItem = colliders[0].gameObject;
+            }
+        }
+        else if (hasUsedItem)
+        {
+            hasUsedItem = false;
+            usedItem.GetComponent<Item>().Interaction();
+            usedItem = null;
         }
     }
 

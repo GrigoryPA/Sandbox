@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class CameraController : MonoBehaviour
     public Vector3 cameraOffsetMod1;
     public Transform cameraPositionMod2;
     public Transform cameraPositionMod3;
+    public Image aim;
     [Space (15)]
     public float sensitivity = 100;
     public Vector2 minMaxAngleY = Vector2.one;
@@ -46,6 +48,7 @@ public class CameraController : MonoBehaviour
                 cameraCenterTransform.position = playerTransform.position;
                 transform.localPosition = cameraOffsetMod1;
                 transform.localEulerAngles = new Vector3(25, 0, 0);
+                aim.enabled = false;
                 break;
 
             case 1:
@@ -53,6 +56,7 @@ public class CameraController : MonoBehaviour
                 transform.localPosition = new Vector3(0.0f, 0.0f, cameraOffsetMod1.z);
                 transform.localRotation = Quaternion.identity;
                 Cursor.lockState = CursorLockMode.None;
+                aim.enabled = false;
                 break;
 
             case 2:
@@ -60,6 +64,7 @@ public class CameraController : MonoBehaviour
                 transform.localPosition = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
                 Cursor.lockState = CursorLockMode.None;
+                aim.enabled = true;
                 break;
 
             case 3:
@@ -67,6 +72,7 @@ public class CameraController : MonoBehaviour
                 transform.localPosition = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
                 Cursor.lockState = CursorLockMode.None;
+                aim.enabled = true;
                 break;
 
             default:
@@ -74,6 +80,7 @@ public class CameraController : MonoBehaviour
                 cameraCenterTransform.position = playerTransform.position;
                 transform.localPosition = cameraOffsetMod1;
                 transform.localEulerAngles = new Vector3(25, 0, 0);
+                aim.enabled = false;
                 break;
         }
     }

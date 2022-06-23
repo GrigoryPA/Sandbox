@@ -4,7 +4,11 @@ using UnityEngine;
 
 public abstract class Item : MonoBehaviour
 {
-    public bool isUsed = false;
+    //предмет принят к использованию, был прозаимодействован
+    public bool isUsing = false;
 
-    public abstract void Interaction();
+    //взаимодействие с предметом
+    //возвращает true - предмет был подобран
+    //возвращает false - предмет нельзя подобрать
+    public abstract bool Interaction(); 
 }
