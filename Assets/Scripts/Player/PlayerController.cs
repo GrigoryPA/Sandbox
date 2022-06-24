@@ -11,7 +11,8 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheckerTransform;
     public Transform ceilingCheckerTransform;
     public Transform interactiveCheckerTransform;
-    public Transform itemWhenUsingTransform; 
+    public Transform itemWhenUsingTransform;
+    public Transform itemWhenUsingFPSTransform;
     public LayerMask notPlayerMask;
     public LayerMask interactiveMask;
     [Space]
@@ -71,15 +72,12 @@ public class PlayerController : MonoBehaviour
 
         if (hasUsedItem)
         {
-            UpdatingPositionUsedItem();
-            
-            if (Input.GetMouseButtonDown(0) && CurrentSettings.cameraMod > 1)
+            Gun gun = usedItem.GetComponent<Gun>();
+            gun.UsePlaceTransform = CurrentSettings.cameraMod > 1 ? itemWhenUsingFPSTransform : itemWhenUsingTransform;
+            if (CurrentSettings.cameraMod > 1)
             {
-                usedItem.GetComponent<Gun>().Fire(camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f)), camera.transform.forward);
-            }
-            if (Input.GetMouseButtonUp(0) && CurrentSettings.cameraMod > 1)
-            {
-                usedItem.GetComponent<Gun>().Fire(camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f)), camera.transform.forward);
+                gun.RayOrigin = camera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.0f));
+                gun.RayDirection = camera.transform.forward;
             }
         }
 
@@ -210,13 +208,6 @@ public class PlayerController : MonoBehaviour
                                                                         radius, notPlayerMask);
     private void UpdateCeilingCheckerPosition(Vector3 newPos) => ceilingCheckerTransform.localPosition = newPos;
 
-    private void UpdatingPositionUsedItem()
-    {
-        //¬озможно будет перемещение оружи€ в разные места от статуса его использовани€ (на по€с, в руки и т д )
-        //ѕеремещение предмета в руки игрока 
-        usedItem.transform.position = itemWhenUsingTransform.position; 
-    }
-
 
     public void TryInteraction()
     {
@@ -228,6 +219,7 @@ public class PlayerController : MonoBehaviour
             {
                 hasUsedItem = true;
                 usedItem = colliders[0].gameObject;
+                colliders[0].GetComponent<Item>().UsePlaceTransform = CurrentSettings.cameraMod > 1 ? itemWhenUsingFPSTransform : itemWhenUsingTransform;
             }
         }
         else if (hasUsedItem)

@@ -1,108 +1,48 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public enum GunType
-{
-    LaserGun,
-    SimpleGunBulletGeneration,
-    SimpleGunBulletTeleportation
-}
 
-public class Gun : Item
+public abstract class Gun : Item
 {
-    private Animator thisAnimator;
-    private bool isFire = false;
-    private bool isShotting = false;
-    private Vector3 rayOrigin;
-    private Vector3 rayDirection;
     public GameObject shotsSource;
-    public Camera fpsCamera;
+    public Transform fpsCameraTransform;
+    public GameObject explosion;
     [Space]
     [Header ("Gun settings:")]
-    public GunType gunType = GunType.LaserGun;
+    public Vector3 offsetPosInHand = Vector3.zero;
     public LayerMask layerReceivingDamage;
-    public float nextShotTime = 0.0f;
     public float fireRate = 0.1f;
-    public float shotDurationForSeconds = 1;
     public float maxShotDistace = 0.1f;
+    public float damage = 50.0f;
+    public float impactForce = 30.0f;
+    public int magazinSize = 10;
 
-    private void Start()
-    {
-        thisAnimator = GetComponent<Animator>();
-    }
+    protected Vector3 rayOrigin;
+    protected Vector3 rayDirection;
+    protected float nextShotTime = 0.0f;
+    protected int shotsCount = 10;
+    public Transform usePlaceTransform;
 
-    private void Update()
+    public override Transform UsePlaceTransform { get => usePlaceTransform; set => usePlaceTransform = value; }
+    public Vector3 RayOrigin { get => rayOrigin; set => rayOrigin = value; }
+    public Vector3 RayDirection { get => rayDirection; set => rayDirection = value; }
+
+    public abstract void Shot(); 
+
+    protected void UpdateItemTransform()
     {
-        if (isUsing && isFire)
+        transform.position = usePlaceTransform.position + offsetPosInHand;
+
+        if (CurrentSettings.cameraMod > 1)
         {
-            if (nextShotTime <= Time.time || isShotting)
-            {
-                nextShotTime = isShotting ? Time.time + fireRate : nextShotTime;
-
-                switch (gunType)
-                {
-                    case GunType.LaserGun:
-                        RaycastHit hit;
-                        LineRenderer lineLaser = shotsSource.GetComponent<LineRenderer>();
-                        lineLaser.SetPosition(0, shotsSource.transform.position);
-                        if (Physics.Raycast(rayOrigin, rayDirection, out hit, maxShotDistace, layerReceivingDamage))
-                        {
-                            lineLaser.SetPosition(1, hit.point);
-
-                            Color past = hit.transform.gameObject.GetComponent<MeshRenderer>().material.color;
-                            hit.transform.gameObject.GetComponent<MeshRenderer>().material.color = new Color(past.r + 0.1f, past.g, past.b);
-                        }
-                        else
-                        {
-                            lineLaser.SetPosition(1, shotsSource.transform.position + shotsSource.transform.forward * maxShotDistace);
-                        }
-
-                        if (!isShotting)
-                        { 
-                            StartCoroutine(LaserShot(lineLaser)); 
-                        }
-                        break;
-
-                    default:
-                        print("Called default gun type");
-                        break;
-                }
-            }
+            Vector3 cameraVector = fpsCameraTransform.eulerAngles;
+            cameraVector.x *= -1;
+            transform.eulerAngles = cameraVector + new Vector3(0, 180, 0);
         }
-         
-        if (isUsing)
+        else
         {
-            if (CurrentSettings.cameraMod > 1)
-            {
-                Vector3 cameraVector = fpsCamera.transform.eulerAngles;
-                cameraVector.x *= -1;
-                transform.eulerAngles = cameraVector + new Vector3(0, 180, 0) ;
-            }
-            else
-            {
-                transform.eulerAngles = Vector3.forward * 90;
-            }
+            transform.eulerAngles = usePlaceTransform.eulerAngles;
         }
-    }
-
-    IEnumerator LaserShot(LineRenderer lineLaser)
-    {
-        isShotting = true;
-        lineLaser.enabled = true;
-        
-        yield return new WaitForSeconds(shotDurationForSeconds);
-
-        isShotting = false;
-        lineLaser.enabled = false;
-    }
-
-    public void Fire(Vector3 originForRaycast, Vector3 directionForRaycast)
-    {
-        rayOrigin = originForRaycast;
-        rayDirection = directionForRaycast;
-        isFire = !isFire;
-        nextShotTime = Time.time;
     }
 
     public override bool Interaction()

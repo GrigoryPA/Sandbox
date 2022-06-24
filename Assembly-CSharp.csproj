@@ -62,6 +62,12 @@
     <Compile Include="Assets\Scripts\Items\Gun.cs" />
     <Compile Include="Assets\Scripts\CurrentSettings.cs" />
     <Compile Include="Assets\Scripts\Items\Item.cs" />
+    <Compile Include="Assets\Scripts\Body.cs" />
+    <Compile Include="Assets\Scripts\Items\LaserGun.cs" />
+    <Compile Include="Assets\Scripts\Items\SimpleGun.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Hovl Studio\Procedural fire\Shaders\FireSphere.shader" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

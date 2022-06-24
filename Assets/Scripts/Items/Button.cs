@@ -5,6 +5,7 @@ using UnityEngine;
 public class Button : Item
 {
     public Animator controlledObjectAnimator;
+    public new Rigidbody rigidbody;
     private Animator thisAnimator;
     private bool state = false;
     
@@ -12,6 +13,7 @@ public class Button : Item
     private void Start()
     {
         thisAnimator = GetComponent<Animator>();
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     public override bool Interaction()
