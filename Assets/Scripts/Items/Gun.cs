@@ -21,7 +21,7 @@ public abstract class Gun : Item
     protected Vector3 rayDirection;
     protected float nextShotTime = 0.0f;
     protected int shotsCount = 10;
-    public Transform usePlaceTransform;
+    protected Transform usePlaceTransform;
 
     public override Transform UsePlaceTransform { get => usePlaceTransform; set => usePlaceTransform = value; }
     public Vector3 RayOrigin { get => rayOrigin; set => rayOrigin = value; }
