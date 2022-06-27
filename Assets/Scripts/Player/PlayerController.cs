@@ -217,6 +217,11 @@ public class PlayerController : MonoBehaviour
         {
             if (colliders[0].GetComponent<Item>().Interaction())
             {
+                if (hasUsedItem)
+                {
+                    usedItem.GetComponent<Item>().Interaction();
+                    usedItem = null;
+                }
                 hasUsedItem = true;
                 usedItem = colliders[0].gameObject;
                 colliders[0].GetComponent<Item>().UsePlaceTransform = CurrentSettings.cameraMod > 1 ? itemWhenUsingFPSTransform : itemWhenUsingTransform;
