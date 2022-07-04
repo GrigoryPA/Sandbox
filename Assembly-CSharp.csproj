@@ -56,34 +56,24 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Items\LaserGun.cs" />
-    <Compile Include="Assets\Scripts\Items\BulletGun.cs" />
+    <Compile Include="Assets\Scripts\Items\Interactive\LaserGun.cs" />
+    <Compile Include="Assets\Scripts\Items\Interactive\BulletGun.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
-    <Compile Include="Assets\Scripts\Items\SimpleGun.cs" />
+    <Compile Include="Assets\Scripts\Items\Interactive\SimpleGun.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
-    <Compile Include="Assets\Scripts\Items\Bullet.cs" />
-    <Compile Include="Assets\Scripts\Items\Button.cs" />
-    <Compile Include="Assets\Scripts\Items\Gun.cs" />
+    <Compile Include="Assets\Scripts\Items\Interactive\Bullet.cs" />
+    <Compile Include="Assets\Scripts\Items\Interactive\Button.cs" />
+    <Compile Include="Assets\Scripts\Items\Interactive\Gun.cs" />
     <Compile Include="Assets\Scripts\CurrentSettings.cs" />
-    <Compile Include="Assets\Scripts\Items\Item.cs" />
+    <Compile Include="Assets\Scripts\Items\Interactive\Item.cs" />
     <Compile Include="Assets\Scripts\Body.cs" />
-    <Compile Include="Assets\Mirror project\Scripts\MirrorPlayer.cs" />
-    <Compile Include="Assets\Mirror project\Scripts\NetMan.cs" />
-    <Compile Include="Assets\Mirror project\Scripts\MirrorBullet.cs" />
+    <Compile Include="Assets\Scripts\Items\Door.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />
-    <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Mdb.dll" />
     <None Include="Assets\ScriptTemplates\51-Mirror__Network Authenticator-NewNetworkAuthenticator.cs.txt" />
-    <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll" />
     <None Include="Assets\ScriptTemplates\56-Mirror__Network Discovery-NewNetworkDiscovery.cs.txt" />
-    <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll" />
-    <None Include="Assets\Mirror\Version.txt" />
-    <None Include="Assets\Mirror\Readme.txt" />
     <None Include="Assets\ScriptTemplates\57-Mirror__Network Transform-NewNetworkTransform.cs.txt" />
     <None Include="Assets\ScriptTemplates\52-Mirror__Network Behaviour-NewNetworkBehaviour.cs.txt" />
-    <None Include="Assets\Mirror\Notice.txt" />
-    <None Include="Assets\Mirror\Plugins\Mono.Cecil\License.txt" />
     <None Include="Assets\ScriptTemplates\55-Mirror__Network Room Player-NewNetworkRoomPlayer.cs.txt" />
     <None Include="Assets\ScriptTemplates\53-Mirror__Custom Interest Management-CustomInterestManagement.cs.txt" />
     <None Include="Assets\Hovl Studio\Procedural fire\Shaders\FireSphere.shader" />
@@ -312,18 +302,6 @@
     </Reference>
     <Reference Include="UnityEditor.UnityConnectModule">
       <HintPath>C:\Users\Admin\Unity Projects\2020.3.25f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX.Rocks">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX.Mdb">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX.Pdb">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Users\Admin\Unity Projects\2020.3.25f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
@@ -702,46 +680,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="kcp2k.csproj">
-      <Project>{E2D7B404-7A5A-7431-C096-72DA0583C7E3}</Project>
-      <Name>kcp2k</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Editor.csproj">
-      <Project>{9C28C7F5-9D18-140D-549E-B7E3010F7F26}</Project>
-      <Name>Mirror.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="where-allocations.csproj">
-      <Project>{B8CA4BD4-4E10-11C2-2582-B5E646D2493A}</Project>
-      <Name>where-allocations</Name>
-    </ProjectReference>
-    <ProjectReference Include="Telepathy.csproj">
-      <Project>{CDD4DD9E-BA55-1E80-6304-BD3A2B27A8B1}</Project>
-      <Name>Telepathy</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Components.csproj">
-      <Project>{7DA9F9A4-B250-FDBC-0C71-95F169CE691D}</Project>
-      <Name>Mirror.Components</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Examples.csproj">
-      <Project>{D09E2418-A18B-1B36-FF06-6852BAE2428F}</Project>
-      <Name>Mirror.Examples</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.CompilerSymbols.csproj">
-      <Project>{429D9DD1-D057-B762-7A28-3B2867C56996}</Project>
-      <Name>Mirror.CompilerSymbols</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Authenticators.csproj">
-      <Project>{D06F164B-A658-2146-43E8-D2398DD69410}</Project>
-      <Name>Mirror.Authenticators</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.csproj">
-      <Project>{D5AD2016-D4BD-4764-E8D5-A928C5BD797F}</Project>
-      <Name>Mirror</Name>
-    </ProjectReference>
-    <ProjectReference Include="SimpleWebTransport.csproj">
-      <Project>{A0F83FDD-EBA2-E1CE-2153-4F6DEE3E1188}</Project>
-      <Name>SimpleWebTransport</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
